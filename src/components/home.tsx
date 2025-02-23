@@ -1,56 +1,106 @@
-import React, { useState } from "react";
-import LanguageSelector from "./LanguageSelector";
-import TextDisplay from "./TextDisplay";
-import RecordingInterface from "./RecordingInterface";
-import ProgressTracker from "./ProgressTracker";
+import React from "react";
+import { Button } from "./ui/button";
+import { Mic, PlayCircle, PenLine } from "lucide-react";
 
-interface HomeProps {
-  initialLanguage?: string;
-  textData?: {
-    originalText: string;
-    pronunciationGuide: string;
-    modernTranslation: string;
-  };
-}
-
-const Home = ({
-  initialLanguage = "Latin",
-  textData = {
-    originalText: "Arma virumque cano, Troiae qui primus ab oris",
-    pronunciationGuide:
-      "[AR-ma wi-RUM-kwe KA-no, TROY-yai kwi PRI-mus ab O-ris]",
-    modernTranslation:
-      "I sing of arms and the man, who first from the shores of Troy",
-  },
-}: HomeProps) => {
-  const [selectedLanguage, setSelectedLanguage] = useState(initialLanguage);
-
+const Home = () => {
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex justify-between items-start gap-8">
-          <div className="flex-1 space-y-8">
-            <div className="flex justify-start">
-              <LanguageSelector
-                selectedLanguage={selectedLanguage}
-                onLanguageSelect={(lang) => setSelectedLanguage(lang)}
-              />
-            </div>
-
-            <TextDisplay
-              originalText={textData.originalText}
-              pronunciationGuide={textData.pronunciationGuide}
-              modernTranslation={textData.modernTranslation}
-            />
-
-            <RecordingInterface />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <span className="text-xl font-semibold">Ancient Voice</span>
           </div>
-
-          <div className="sticky top-8">
-            <ProgressTracker />
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              onClick={() => (window.location.href = "/login")}
+            >
+              LOG IN / SIGN UP
+            </Button>
+            <Button variant="outline" size="icon">
+              <span className="sr-only">Language</span>
+              EN
+            </Button>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Navigation */}
+      <nav className="border-b bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            <Button
+              variant="ghost"
+              className="relative py-4 px-1 font-medium text-primary"
+              onClick={() => (window.location.href = "/record")}
+            >
+              <Mic className="w-4 h-4 mr-2" />
+              Speak
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+            </Button>
+            <Button
+              variant="ghost"
+              className="py-4 px-1 font-medium text-muted-foreground"
+            >
+              <PlayCircle className="w-4 h-4 mr-2" />
+              Listen
+            </Button>
+            <Button
+              variant="ghost"
+              className="py-4 px-1 font-medium text-muted-foreground"
+            >
+              <PenLine className="w-4 h-4 mr-2" />
+              Write
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-8">
+          <p className="text-lg text-muted-foreground">
+            Click <Mic className="w-4 h-4 inline mx-1 text-destructive" /> then
+            read the sentence aloud
+          </p>
+        </div>
+
+        <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-sm p-8 mb-8">
+          <p className="text-xl text-center">
+            Some of the above information has been adapted from AllRefer dot
+            com.
+          </p>
+        </div>
+
+        <div className="flex justify-center space-x-4 mb-8">
+          <Button variant="outline" className="space-x-2">
+            <span>Guidelines</span>
+          </Button>
+          <Button variant="outline" className="space-x-2">
+            <span>Report</span>
+          </Button>
+          <div className="flex-1" />
+          <Button variant="outline" className="space-x-2">
+            <span>Skip</span>
+          </Button>
+          <Button
+            className="space-x-2"
+            onClick={() => {
+              // Only redirect to login if the user wants to submit
+              const { user } = useAuth();
+              if (!user) {
+                window.location.href = "/login";
+              } else {
+                // Handle submission
+                console.log("Submitting recording...");
+              }
+            }}
+          >
+            <span>Submit</span>
+          </Button>
+        </div>
+      </main>
     </div>
   );
 };
